@@ -1,0 +1,8 @@
+[package]
+name = "week01"
+version = "0.1.0"
+edition = "2021"
+
+# Each .rs file in src/bin/ becomes a binary.
+# Run with: cargo run --bin <name>
+# Example: cargo run --bin 01_enums
