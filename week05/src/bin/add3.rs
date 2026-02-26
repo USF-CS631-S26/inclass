@@ -5,7 +5,7 @@ extern "C" {
     fn add3_s(a: i32, b: i32, c: i32) -> i32;
 }
 
-fn add3_c(a: i32, b: i32, c: i32) -> i32 {
+fn add3(a: i32, b: i32, c: i32) -> i32 {
     a + b + c
 }
 
@@ -20,8 +20,8 @@ fn main() {
     let b: i32 = args[2].parse().unwrap_or(0);
     let c: i32 = args[3].parse().unwrap_or(0);
 
-    let r = add3_c(a, b, c);
-    println!("add3_c({}, {}, {}) = {}", a, b, c, r);
+    let r = add3(a, b, c);
+    println!("Rust: add3({}, {}, {}) = {}", a, b, c, r);
 
     let r = unsafe { add3_s(a, b, c) };
     println!("add3_s({}, {}, {}) = {}", a, b, c, r);

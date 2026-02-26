@@ -5,7 +5,7 @@ extern "C" {
     fn ifelse_s(val: i32) -> i32;
 }
 
-fn ifelse_c(val: i32) -> i32 {
+fn ifelse(val: i32) -> i32 {
     if val > 0 {
         1
     } else {
@@ -22,8 +22,8 @@ fn main() {
 
     let val: i32 = args[1].parse().unwrap_or(0);
 
-    let r = ifelse_c(val);
-    println!("ifelse_c({}) = {}", val, r);
+    let r = ifelse(val);
+    println!("Rust: ifelse({}) = {}", val, r);
 
     let r = unsafe { ifelse_s(val) };
     println!("ifelse_s({}) = {}", val, r);
