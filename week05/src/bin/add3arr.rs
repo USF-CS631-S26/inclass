@@ -23,8 +23,8 @@ fn main() {
     ];
 
     let r = add3arr(&arr);
-    println!("Rust: add3arr({:p}) = {}", arr.as_ptr(), r);
+    println!("Rust: {}", r);
 
     let r = unsafe { add3arr_s(arr.as_ptr()) };
-    println!("add3arr_s({:p}) = {}", arr.as_ptr(), r);
+    println!("Asm: {}", r);
 }

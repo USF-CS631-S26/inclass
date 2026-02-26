@@ -21,8 +21,8 @@ fn main() {
     let c: i32 = args[3].parse().unwrap_or(0);
 
     let r = add3(a, b, c);
-    println!("Rust: add3({}, {}, {}) = {}", a, b, c, r);
+    println!("Rust: {}", r);
 
     let r = unsafe { add3_s(a, b, c) };
-    println!("add3_s({}, {}, {}) = {}", a, b, c, r);
+    println!("Asm: {}", r);
 }

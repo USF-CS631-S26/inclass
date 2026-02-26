@@ -23,8 +23,8 @@ fn main() {
     let val: i32 = args[1].parse().unwrap_or(0);
 
     let r = ifelse(val);
-    println!("Rust: ifelse({}) = {}", val, r);
+    println!("Rust: {}", r);
 
     let r = unsafe { ifelse_s(val) };
-    println!("ifelse_s({}) = {}", val, r);
+    println!("Asm: {}", r);
 }

@@ -19,8 +19,8 @@ fn main() {
     let val: i32 = args[1].parse().unwrap_or(0);
 
     let r = add1(val);
-    println!("Rust: add1({}) = {}", val, r);
+    println!("Rust: {}", r);
 
     let r = unsafe { add1_s(val) };
-    println!("add1_s({}) = {}", val, r);
+    println!("Asm: {}", r);
 }

@@ -10,8 +10,8 @@ fn first() -> i32 {
 
 fn main() {
     let r = first();
-    println!("Rust: first() = {}", r);
+    println!("Rust: {}", r);
 
     let r = unsafe { first_s() };
-    println!("first_s() = {}", r);
+    println!("Asm: {}", r);
 }

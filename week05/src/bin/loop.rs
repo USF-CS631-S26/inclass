@@ -23,8 +23,8 @@ fn main() {
     let n: i32 = args[1].parse().unwrap_or(0);
 
     let r = loop_fn(n);
-    println!("Rust: loop({}) = {}", n, r);
+    println!("Rust: {}", r);
 
     let r = unsafe { loop_s(n) };
-    println!("loop_s({}) = {}", n, r);
+    println!("Asm: {}", r);
 }
