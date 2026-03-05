@@ -1,0 +1,31 @@
+[package]
+name = "week06"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+cc = "1"
+
+[[bin]]
+name = "call"
+path = "src/bin/call.rs"
+
+[[bin]]
+name = "add4f"
+path = "src/bin/add4f.rs"
+
+[[bin]]
+name = "arr"
+path = "src/bin/arr.rs"
+
+[[bin]]
+name = "inrange"
+path = "src/bin/inrange.rs"
+
+[[bin]]
+name = "factrec"
+path = "src/bin/factrec.rs"
+
+[[bin]]
+name = "sumarr"
+path = "src/bin/sumarr.rs"
