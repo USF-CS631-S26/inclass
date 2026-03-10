@@ -1,0 +1,35 @@
+[package]
+name = "week07"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+cc = "1"
+
+[[bin]]
+name = "bits"
+path = "src/bin/bits.rs"
+
+[[bin]]
+name = "strlen"
+path = "src/bin/strlen.rs"
+
+[[bin]]
+name = "strcpy"
+path = "src/bin/strcpy.rs"
+
+[[bin]]
+name = "get_bitseq"
+path = "src/bin/get_bitseq.rs"
+
+[[bin]]
+name = "intdr"
+path = "src/bin/intdr.rs"
+
+[[bin]]
+name = "endian"
+path = "src/bin/endian.rs"
+
+[[bin]]
+name = "twos"
+path = "src/bin/twos.rs"
