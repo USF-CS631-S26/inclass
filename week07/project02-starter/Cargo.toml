@@ -1,0 +1,35 @@
+[package]
+name = "project02"
+version = "0.1.0"
+edition = "2024"
+
+[build-dependencies]
+cc = "1"
+
+[[bin]]
+name = "get_bitseq"
+path = "src/bin/get_bitseq.rs"
+
+[[bin]]
+name = "get_bitseq_signed"
+path = "src/bin/get_bitseq_signed.rs"
+
+[[bin]]
+name = "pack_bytes"
+path = "src/bin/pack_bytes.rs"
+
+[[bin]]
+name = "unpack_bytes"
+path = "src/bin/unpack_bytes.rs"
+
+[[bin]]
+name = "rstr"
+path = "src/bin/rstr.rs"
+
+[[bin]]
+name = "rstr_rec"
+path = "src/bin/rstr_rec.rs"
+
+[[bin]]
+name = "ntlang"
+path = "src/bin/ntlang.rs"
