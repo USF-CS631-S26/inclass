@@ -1,8 +1,11 @@
 FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install -y \
-    gcc-riscv64-linux-gnu qemu-user curl build-essential \
+    gcc-riscv64-linux-gnu qemu-user curl build-essential gdb-multiarch \
     && rm -rf /var/lib/apt/lists/*
+
+# rust-gdb uses $GDB as the underlying debugger
+ENV GDB=gdb-multiarch
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable

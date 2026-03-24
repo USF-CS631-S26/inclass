@@ -9,7 +9,7 @@ else
   CARGO_FLAGS = --target riscv64gc-unknown-linux-gnu
 endif
 
-.PHONY: build run clean docker-image-ensure docker-build docker-shell
+.PHONY: build run clean docker-image-ensure docker-build docker-shell debug-server debug rust-debug
 
 build: docker-image-ensure
 	$(CARGO_CMD) build $(CARGO_FLAGS)
@@ -35,3 +35,24 @@ docker-build:
 
 docker-shell:
 	docker run --rm -it -v $(CURDIR):/project $(IMAGE_NAME) bash
+
+# Debug: Terminal 1 - start QEMU waiting for GDB connection
+debug-server: docker-image-ensure build
+	docker run --rm -v $(CURDIR):/project --name week09-debug \
+	    $(IMAGE_NAME) \
+	    qemu-riscv64 -g 1234 -L /usr/riscv64-linux-gnu \
+	    target/riscv64gc-unknown-linux-gnu/debug/week09 $(ARGS)
+
+# Debug: Terminal 2 - attach gdb-multiarch
+debug:
+	docker exec -it week09-debug \
+	    gdb-multiarch -x .gdbinit target/riscv64gc-unknown-linux-gnu/debug/week09
+
+# Debug: Terminal 2 - attach rust-gdb (with Rust pretty-printers)
+rust-debug:
+	docker exec -it -e GDB=gdb-multiarch week09-debug \
+	    rust-gdb \
+	    -ex "set architecture riscv:rv64" \
+	    -ex "target remote localhost:1234" \
+	    -ex "set sysroot /usr/riscv64-linux-gnu" \
+	    target/riscv64gc-unknown-linux-gnu/debug/week09

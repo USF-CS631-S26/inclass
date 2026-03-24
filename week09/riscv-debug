@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage: riscv-debug [--rust] <cargo-bin|executable> [args...]
+#   --rust  Use rust-gdb (with Rust pretty-printers) instead of gdb-multiarch
+
+DEBUGGER="gdb-multiarch"
+if [ "${1:-}" = "--rust" ]; then
+    DEBUGGER="rust-gdb"
+    shift
+fi
+
+BIN="${1:?usage: riscv-debug [--rust] <binary|executable> [args...]}"
+shift || true
+
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+IMAGE="week09-riscv"
+CONTAINER="week09-debug-$$"
+GDB_PORT=1234
+TARGET="riscv64gc-unknown-linux-gnu"
+
+ensure_image() {
+    if ! docker image inspect "$IMAGE" &>/dev/null; then
+        echo "Building Docker image '$IMAGE'..." >&2
+        docker build -t "$IMAGE" "$PROJECT_DIR"
+    fi
+}
+
+cleanup() {
+    docker rm -f "$CONTAINER" &>/dev/null || true
+}
+trap cleanup EXIT
+
+ensure_image
+
+if [ -f "$BIN" ]; then
+    BIN_PATH="$BIN"
+else
+    # Build the cargo binary
+    docker run --rm -v "$PROJECT_DIR":/project "$IMAGE" \
+        cargo build --quiet --target "$TARGET" --bin "$BIN"
+    BIN_PATH="target/${TARGET}/debug/${BIN}"
+fi
+
+# Start QEMU with GDB stub in background container
+docker run -d --rm -v "$PROJECT_DIR":/project --name "$CONTAINER" \
+    "$IMAGE" \
+    qemu-riscv64 -g "$GDB_PORT" -L /usr/riscv64-linux-gnu \
+    "$BIN_PATH" "$@"
+
+# Give QEMU a moment to start the GDB stub
+sleep 0.5
+
+# Attach the debugger
+# Use -ex flags instead of .gdbinit to avoid safe-path issues with rust-gdb.
+# Explicitly set GDB=gdb-multiarch so rust-gdb uses the multiarch backend.
+GDB_EX=(-ex "set architecture riscv:rv64" -ex "target remote localhost:$GDB_PORT" -ex "set sysroot /usr/riscv64-linux-gnu")
+docker exec -it -e GDB=gdb-multiarch "$CONTAINER" \
+    "$DEBUGGER" "${GDB_EX[@]}" "$BIN_PATH"

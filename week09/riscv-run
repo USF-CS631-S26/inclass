@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BIN="${1:?usage: riscv-run <binary|executable> [args...]}"
+shift
+
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+IMAGE="project02-riscv"
+
+ensure_image() {
+    if ! docker image inspect "$IMAGE" &>/dev/null; then
+        echo "Building Docker image '$IMAGE'..." >&2
+        docker build -t "$IMAGE" "$PROJECT_DIR"
+    fi
+}
+
+if [ -f "$BIN" ]; then
+    # Direct executable (e.g. ./prog compiled by ntlang -c)
+    if [ "$(uname -m)" = "riscv64" ]; then
+        exec "$BIN" "$@"
+    else
+        ensure_image
+        exec docker run --rm -v "$PROJECT_DIR":/project -w /project "$IMAGE" \
+            qemu-riscv64 -L /usr/riscv64-linux-gnu "$BIN" "$@"
+    fi
+else
+    # Cargo binary
+    if [ "$(uname -m)" = "riscv64" ]; then
+        cargo build --quiet --manifest-path "$PROJECT_DIR/Cargo.toml" --bin "$BIN"
+        exec "$PROJECT_DIR/target/debug/$BIN" "$@"
+    else
+        ensure_image
+        exec docker run --rm -v "$PROJECT_DIR":/project \
+            -e CC_riscv64gc_unknown_linux_gnu=riscv64-linux-gnu-gcc \
+            "$IMAGE" \
+            cargo run --quiet --target riscv64gc-unknown-linux-gnu --bin "$BIN" -- "$@"
+    fi
+fi
