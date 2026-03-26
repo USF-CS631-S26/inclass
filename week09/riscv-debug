@@ -54,6 +54,15 @@ sleep 0.5
 # Attach the debugger
 # Use -ex flags instead of .gdbinit to avoid safe-path issues with rust-gdb.
 # Explicitly set GDB=gdb-multiarch so rust-gdb uses the multiarch backend.
-GDB_EX=(-ex "set architecture riscv:rv64" -ex "target remote localhost:$GDB_PORT" -ex "set sysroot /usr/riscv64-linux-gnu")
+GDB_EX=(
+    -ex "set auto-load safe-path /"
+    -ex "set architecture riscv:rv64"
+    -ex "target remote localhost:$GDB_PORT"
+    -ex "set sysroot /usr/riscv64-linux-gnu"
+    -ex "set debuginfod enabled off"
+    -ex "tui new-layout asm {-horizontal src 1 regs 1} 2 status 0 cmd 1"
+    -ex "tui enable"
+    -ex "layout asm"
+)
 docker exec -it -e GDB=gdb-multiarch "$CONTAINER" \
     "$DEBUGGER" "${GDB_EX[@]}" "$BIN_PATH"
