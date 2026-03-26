@@ -1,3 +1,8 @@
+mod bits;
+mod rv_emu;
+
+use rv_emu::{rv_emulate, rv_init, RvState};
+
 unsafe extern "C" {
     fn add2_s(a0: i32, a1: i32) -> i32;
 }
@@ -42,6 +47,16 @@ fn signext() {
     println!("imm = {}", imm);
 }
 
+fn emu_add2() {
+    let r = unsafe { add2_s(3, 4) };
+    println!("Asm: add2_s(3, 4) = {}", r);
+
+    let mut state = RvState::new();
+    rv_init(&mut state, add2_s as *const u32, 3, 4, 0, 0);
+    let r = rv_emulate(&mut state);
+    println!("Emu: add2_s(3, 4) = {}", r as i32);
+}
+
 fn main() {
     println!("== decode ==");
     decode();
@@ -50,4 +65,9 @@ fn main() {
 
     println!("== signext ==");
     signext();
+
+    println!();
+
+    println!("== emu_add2 ==");
+    emu_add2();
 }
